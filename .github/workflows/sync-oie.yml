@@ -1,0 +1,47 @@
+name: Sync from OpenIntegrationEngine/engine
+
+on:
+  schedule:
+    - cron: '0 18 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Fetch upstream
+        run: |
+          git remote add oie https://github.com/OpenIntegrationEngine/engine.git
+          git fetch oie --tags
+
+      - name: Mirror oie/main onto oie-main branch
+        run: |
+          git fetch origin refs/heads/oie-main:refs/remotes/origin/oie-main || true
+          git push origin --force-with-lease refs/remotes/oie/main:refs/heads/oie-main
+
+      - name: Push new upstream tags
+        run: git push origin --tags
+
+      - name: Open sync PR if oie-main is ahead of main
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "$(git rev-parse oie/main)" = "$(git rev-parse origin/main)" ]; then
+            echo "main already matches oie/main; nothing to sync."
+            exit 0
+          fi
+          open_count=$(gh pr list --head oie-main --base main --state open --json number --jq 'length')
+          if [ "$open_count" = "0" ]; then
+            gh pr create --head oie-main --base main --fill
+          else
+            echo "Sync PR already open for oie-main -> main; push already updated it."
+          fi
