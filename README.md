@@ -1,3 +1,7 @@
+> **InflexionHealth mirror.** This repo's `main` branch is InflexionHealth's maintained mirror of [OpenIntegrationEngine/engine](https://github.com/OpenIntegrationEngine/engine) (upstream). The legacy NextGen Mirth 4.6.0-snapshot is preserved on the [`development`](https://github.com/InflexionHealth/mirthconnect/tree/development) branch. Deploy and channel artifacts live in the `radreportai` repo under `integration/mirth/`.
+
+---
+
 # Open Integration Engine
 
 [![Website](https://img.shields.io/badge/website-openintegrationengine.org-blue)](https://openintegrationengine.org)
