@@ -27,6 +27,7 @@ jobs:
         run: |
           git fetch origin refs/heads/oie-main:refs/remotes/origin/oie-main || true
           git push origin --force-with-lease refs/remotes/oie/main:refs/heads/oie-main
+          git branch -f oie-main oie/main
 
       - name: Push new upstream release tags
         # ponytail: scoped to v* (OIE's release convention) — a blanket `--tags` pulls in
