@@ -40,8 +40,10 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if [ "$(git rev-parse oie/main)" = "$(git rev-parse origin/main)" ]; then
-            echo "main already matches oie/main; nothing to sync."
+          # main permanently carries the InflexionHealth README note on top of oie/main,
+          # so SHA equality never holds — check ancestry (already-merged) instead.
+          if git merge-base --is-ancestor oie-main origin/main; then
+            echo "main already contains oie-main; nothing to sync."
             exit 0
           fi
           open_count=$(gh pr list --head oie-main --base main --state open --json number --jq 'length')
