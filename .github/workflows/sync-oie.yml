@@ -28,8 +28,12 @@ jobs:
           git fetch origin refs/heads/oie-main:refs/remotes/origin/oie-main || true
           git push origin --force-with-lease refs/remotes/oie/main:refs/heads/oie-main
 
-      - name: Push new upstream tags
-        run: git push origin --tags
+      - name: Push new upstream release tags
+        # ponytail: scoped to v* (OIE's release convention) — a blanket `--tags` pulls in
+        # decades of legacy pre-fork tags, and GITHUB_TOKEN is hard-blocked by GitHub from
+        # pushing any ref whose history touches .github/workflows/*, which several of those
+        # ancient tags do. Widen only if OIE's tagging convention changes.
+        run: git push origin 'refs/tags/v*:refs/tags/v*'
 
       - name: Open sync PR if oie-main is ahead of main
         env:
